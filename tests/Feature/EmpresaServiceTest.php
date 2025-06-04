@@ -3,24 +3,24 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Services\EmpresaService;
-use App\Repositories\EmpresaRepositoryInterface;
-use App\Models\Empresa;
-use App\DTOs\EmpresaDTO;
+use App\Application\UseCases\CrearEmpresaService;
+use App\Domain\Repositories\EmpresaRepositoryInterface;
+use App\Domain\Entities\Empresa;
+use App\Application\DTOs\EmpresaDTO;
 use Mockery;
 use Mockery\MockInterface;
 
 class EmpresaServiceTest extends TestCase
 {
     protected MockInterface $empresaRepository;
-    protected EmpresaService $empresaService;
+    protected CrearEmpresaService $crearEmpresaService;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->empresaRepository = Mockery::mock(EmpresaRepositoryInterface::class);
-        $this->empresaService = new EmpresaService($this->empresaRepository);
+        $this->crearEmpresaService = new CrearEmpresaService($this->empresaRepository);
     }
 
     public function test_crear_empresa_llama_al_repositorio_con_datos_correctos()
@@ -52,7 +52,7 @@ class EmpresaServiceTest extends TestCase
             ->andReturn($empresaMock);
 
         // Ejecutar el método real
-        $resultado = $this->empresaService->crearEmpresa($empresaDTO);
+        $resultado = $this->crearEmpresaService->crearEmpresa($empresaDTO);
 
         // Verificar que se devolvió lo esperado
         $this->assertInstanceOf(Empresa::class, $resultado);

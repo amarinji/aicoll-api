@@ -3,7 +3,7 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use App\DTOs\EmpresaDTO;
+use App\Application\DTOs\EmpresaDTO;
 use InvalidArgumentException;
 
 class EmpresaDTOTest extends TestCase
