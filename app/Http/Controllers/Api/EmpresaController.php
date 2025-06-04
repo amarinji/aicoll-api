@@ -3,81 +3,69 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;	
+use App\Services\EmpresaService;
 use Illuminate\Http\Request;
-use App\Models\Empresa;
 use App\Http\Requests\StoreEmpresaRequest;
 use App\Http\Requests\UpdateEmpresaRequest;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Validator;
+use App\DTOs\EmpresaDTO;
+use InvalidArgumentException;
 
 class EmpresaController extends Controller
 {
-    // Crear nueva empresa
+    protected EmpresaService $empresaService;
 
-    public function store(Request $request)
+    public function __construct(EmpresaService $empresaService)
     {
-        $validator = Validator::make($request->all(), [
-            'nit' => 'required|string|unique:empresas,nit',
-            'nombre' => 'required|string|max:255',
-            'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'errors' => $validator->errors()
-            ], 422);
-        }
-
-        $empresa = Empresa::create($request->all());
-
-        return response()->json([
-            'message' => 'Empresa creada con éxito',
-            'empresa' => $empresa
-        ], 201);
+        $this->empresaService = $empresaService;
     }
 
+    
+    public function store(StoreEmpresaRequest $request): JsonResponse
+    {
+        try {
+            $empresaDTO = new EmpresaDTO($request->validated());
+            $empresa = $this->empresaService->crearEmpresa($empresaDTO);
+            return response()->json([
+                'message' => 'Empresa creada con éxito',
+                'empresa' => $empresa
+            ], 201);
+        } catch (InvalidArgumentException $e) {
+        return response()->json([
+            'message' => $e->getMessage()
+        ], 422);
+    }
+    }
 
-    // Listar todas las empresas
     public function index(): JsonResponse
     {
-        $empresas = Empresa::all();
+        $empresas = $this->empresaService->obtenerTodas();
 
         return response()->json($empresas);
     }
 
-    // Mostrar empresa por NIT
     public function show(string $nit): JsonResponse
     {
-        $empresa = Empresa::find($nit);
-
-        if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
-        }
-
+        $empresa = $this->empresaService->obtenerPorNit($nit);
         return response()->json($empresa);
     }
 
-    // Actualizar empresa
     public function update(UpdateEmpresaRequest $request, string $nit): JsonResponse
     {
-        $empresa = Empresa::find($nit);
+        $empresaDTO = new EmpresaDTO($request->validated());
 
-        if (!$empresa) {
-            return response()->json(['message' => 'Empresa no encontrada'], 404);
-        }
+        $empresaActualizada = $this->empresaService->actualizarEmpresa($nit, $empresaDTO);
 
-        $empresa->update($request->validated());
-
-        return response()->json(['message' => 'Empresa actualizada correctamente', 'empresa' => $empresa]);
+        return response()->json([
+            'message' => 'Empresa actualizada con éxito',
+            'empresa' => $empresaActualizada
+        ]);
     }
 
-    // Eliminar empresas con estado inactivo
     public function destroyInactivas(): JsonResponse
     {
-        $eliminadas = Empresa::where('estado', 'inactivo')->delete();
+        $eliminadas = $this->empresaService->eliminarInactivas();
 
         return response()->json(['message' => "Se eliminaron $eliminadas empresas inactivas."]);
     }
 }
-

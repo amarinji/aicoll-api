@@ -10,32 +10,34 @@ class EmpresaTest extends TestCase
 {
     use RefreshDatabase;
 
-    #[Test]
-    public function crea_una_empresa_correctamente()
+    public function test_crea_una_empresa_correctamente()
     {
-        $response = $this->postJson('/api/empresas', [
-            'nombre' => 'Mi Empresa S.A.S.',
+        $response = $this->postJson('/api/empresa', [
             'nit' => '123456789',
+            'nombre' => 'Mi Empresa S.A.S.',
+            'direccion' => 'Cra xx',
+            'telefono' => '272327666'
         ]);
 
         $response->assertStatus(201)
                  ->assertJsonStructure([
                      'message',
-                     'empresa' => ['id', 'nombre', 'nit', 'created_at', 'updated_at']
+                     'empresa' => ['nit', 'nombre', 'direccion', 'telefono', 'created_at', 'updated_at']
                  ]);
 
         $this->assertDatabaseHas('empresas', ['nit' => '123456789']);
     }
 
-    #[Test]
-    public function no_crea_empresa_con_nit_duplicado()
+    public function test_no_crea_empresa_con_nit_duplicado()
     {
         Empresa::create([
-            'nombre' => 'Empresa Inicial',
             'nit' => '987654321',
+            'nombre' => 'Empresa Inicial',
+            'direccion' => 'Cra xx',
+            'telefono' => '272327666'
         ]);
 
-        $response = $this->postJson('/api/empresas', [
+        $response = $this->postJson('/api/empresa', [
             'nombre' => 'Empresa Duplicada',
             'nit' => '987654321',
         ]);
@@ -47,7 +49,7 @@ class EmpresaTest extends TestCase
     #[Test]
     public function no_crea_empresa_si_falta_el_nombre()
     {
-        $response = $this->postJson('/api/empresas', [
+        $response = $this->postJson('/api/empresa', [
             'nit' => '123123123',
         ]);
 
