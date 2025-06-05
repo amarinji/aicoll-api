@@ -4,35 +4,61 @@ namespace App\Application\DTOs;
 
 use InvalidArgumentException;
 
-class EmpresaDTO
+/**
+ * DTO que representa una Empresa
+ *
+ * @property string $nit
+ * @property string $nombre
+ * @property string|null $direccion
+ * @property string|null $telefono
+ */
+final class EmpresaDTO
 {
-    public string $nit;
-    public string $nombre;
-    public ?string $direccion;
-    public ?string $telefono;
+    public readonly string $nit;
+    public readonly string $nombre;
+    public readonly ?string $direccion;
+    public readonly ?string $telefono;
 
-    public function __construct(array $data)
-    {
-        $this->setNit($data['nit'] ?? null);
-        $this->setNombre($data['nombre'] ?? null);
-        $this->direccion = $data['direccion'] ?? null;
-        $this->telefono = $data['telefono'] ?? null;
-    }
-
-    public function setNit(?string $nit): void
-    {
-        if (empty($nit) || !preg_match('/^\d+$/', $nit)) {
+    public function __construct(
+        string $nit,
+        string $nombre,
+        ?string $direccion = null,
+        ?string $telefono = null
+    ) {
+        if (!preg_match('/^\d+$/', $nit)) {
             throw new InvalidArgumentException("El NIT debe ser un número válido.");
         }
-        $this->nit = $nit;
-    }
-
-    public function setNombre(?string $nombre): void
-    {
+        if (empty($nit)) {
+            throw new InvalidArgumentException("NIT no puede estar vacío.");
+        }
         if (empty($nombre)) {
             throw new InvalidArgumentException("El nombre es obligatorio.");
         }
+
+        $this->nit = $nit;
         $this->nombre = $nombre;
+        $this->direccion = $direccion;
+        $this->telefono = $telefono;
+    }
+
+    public static function fromArray(array $data): self
+    {
+        return new self(
+            $data['nit'] ?? '',
+            $data['nombre'] ?? '',
+            $data['direccion'] ?? null,
+            $data['telefono'] ?? null,
+        );
+    }
+
+    public function getNit(): string
+    {
+        return $this->nit;
+    }
+
+    public function getNombre(): string
+    {
+        return $this->nombre;
     }
 
     public function getDireccion(): ?string
@@ -47,9 +73,8 @@ class EmpresaDTO
 
     public function telefonoFormateado(): ?string
     {
-        if ($this->telefono === null) {
-            return null;
-        }
-        return preg_replace('/\D+/', '', $this->telefono);
+        return $this->telefono !== null
+            ? preg_replace('/\D+/', '', $this->telefono)
+            : null;
     }
 }

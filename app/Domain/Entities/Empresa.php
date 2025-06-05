@@ -2,15 +2,13 @@
 
 namespace App\Domain\Entities;
 
-use Illuminate\Database\Eloquent\Model;
-
-class Empresa extends Model
+class Empresa
 {
-    // app/Models/Empresa.php
-    protected $primaryKey = 'nit';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
-    protected $fillable = ['nit', 'nombre', 'direccion', 'telefono', 'estado'];
-
+    public function __construct(
+        public readonly string $nit,
+        public string $nombre,
+        public ?string $direccion = null,
+        public ?string $telefono = null,
+        public string $estado = 'activo'
+    ) {}
 }

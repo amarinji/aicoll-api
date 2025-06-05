@@ -6,26 +6,26 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateEmpresaRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
             'nombre' => 'sometimes|string|max:255',
             'direccion' => 'sometimes|string|max:255',
-            'telefono' => 'sometimes|string|max:20',
-            'estado' => 'sometimes|in:Activo,inactivo',
+            'telefono' => ['sometimes', 'string', 'max:20', 'regex:/^[0-9\s\-\+]+$/'],
+            'estado' => 'sometimes|in:activo,inactivo',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'telefono.regex' => 'El teléfono tiene un formato inválido.',
+            'estado.in' => 'El estado debe ser activo o inactivo.',
         ];
     }
 }

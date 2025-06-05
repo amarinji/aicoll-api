@@ -6,8 +6,10 @@ use Exception;
 
 class EmpresaNoEncontradaException extends Exception
 {
+    private const NOT_FOUND_CODE = 404;
+
     public function __construct(string $nit)
     {
-        parent::__construct("Empresa con NIT {$nit} no encontrada", 404);
+        parent::__construct("Empresa con NIT {$nit} no encontrada", self::NOT_FOUND_CODE);
     }
 }

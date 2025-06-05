@@ -2,9 +2,9 @@
 
 namespace App\Application\UseCases;
 
+use Illuminate\Support\Collection;
 use App\Domain\Entities\Empresa;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
-use Illuminate\Support\Collection;
 use App\Application\DTOS\EmpresaDTO;
 use App\Exceptions\EmpresaNoEncontradaException;
 
@@ -52,6 +52,7 @@ class EmpresaService
             'nombre' => $empresaDTO->nombre,
             'direccion' => $empresaDTO->direccion,
             'telefono' => $empresaDTO->telefono,
+            'estado' => $empresaDTO->estado,
         ]);
 
         return $empresa;

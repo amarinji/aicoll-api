@@ -6,22 +6,22 @@ use App\Application\DTOs\EmpresaDTO;
 use App\Domain\Entities\Empresa;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
 
+
 class CrearEmpresaService
 {
-    protected EmpresaRepositoryInterface $empresaRepository;
+    public function __construct(
+        private EmpresaRepositoryInterface $repository
+    ) {}
 
-    public function __construct(EmpresaRepositoryInterface $empresaRepository)
+    public function handle(array $data): Empresa
     {
-        $this->empresaRepository = $empresaRepository;
-    }
+        $empresa = new Empresa(
+            nit: $data['nit'],
+            nombre: $data['nombre'],
+            direccion: $data['direccion'] ?? null,
+            telefono: $data['telefono'] ?? null,
+        );
 
-    public function crearEmpresa(EmpresaDTO $empresaDTO): Empresa
-    {
-        return $this->empresaRepository->crear([
-            'nit' => $empresaDTO->nit,
-            'nombre' => $empresaDTO->nombre,
-            'direccion' => $empresaDTO->getDireccion(),
-            'telefono' => $empresaDTO->telefonoFormateado(),
-        ]);
+        return $this->repository->crear($empresa);
     }
 }
