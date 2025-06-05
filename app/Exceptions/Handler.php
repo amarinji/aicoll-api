@@ -4,17 +4,19 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use App\Exceptions\EmpresaNoEncontradaException;
+use App\Exceptions\Traits\HandleCustomExceptionsTrait;
+
 
 class Handler extends ExceptionHandler
 {
- 
+    use HandleCustomExceptionsTrait;
+
     public function render($request, Throwable $exception)
     {
-        if ($exception instanceof EmpresaNoEncontradaException) {
-            return response()->json([
-                'message' => $exception->getMessage()
-            ], 404);
+        $customResponse = $this->handleCustomException($exception);
+
+        if ($customResponse !== null) {
+            return $customResponse;
         }
 
         return parent::render($request, $exception);

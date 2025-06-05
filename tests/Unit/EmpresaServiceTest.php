@@ -5,22 +5,22 @@ namespace Tests\Unit;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
-use App\Application\UseCases\CrearEmpresaService;
+use App\Application\UseCases\CrearEmpresaUseCase;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
 use App\Domain\Entities\Empresa;
 use App\Application\DTOs\EmpresaDTO;
 
-class EmpresaServiceTest extends TestCase
+class CrearEmpresaUseCaseTest extends TestCase
 {
     protected MockInterface $empresaRepository;
-    protected CrearEmpresaService $crearEmpresaService;
+    protected CrearEmpresaUseCase $crearEmpresaUseCase;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->empresaRepository = Mockery::mock(EmpresaRepositoryInterface::class);
-        $this->crearEmpresaService = new CrearEmpresaService($this->empresaRepository);
+        $this->crearEmpresaUseCase = new CrearEmpresaUseCase($this->empresaRepository);
     }
 
     public function test_crear_empresa_llama_al_repositorio_con_datos_correctos()
@@ -52,7 +52,7 @@ class EmpresaServiceTest extends TestCase
             ->andReturn($empresaMock);
 
         // Ejecutar el método real
-        $resultado = $this->crearEmpresaService->handle($dto);
+        $resultado = $this->crearEmpresaUseCase->execute($dto);
 
         // Verificar que se devolvió lo esperado
         $this->assertInstanceOf(Empresa::class, $resultado);
@@ -80,7 +80,7 @@ class EmpresaServiceTest extends TestCase
             ->once()
             ->andThrow(new \Exception('Error al crear empresa'));
 
-        $this->crearEmpresaService->handle($dto);
+        $this->crearEmpresaUseCase->execute($dto);
     }
 
     protected function tearDown(): void

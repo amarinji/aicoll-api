@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(EmpresaRepositoryInterface::class, EloquentEmpresaRepository::class);
+        $this->app->singleton(EmpresaRepositoryInterface::class, EloquentEmpresaRepository::class);
     }
 
     /**

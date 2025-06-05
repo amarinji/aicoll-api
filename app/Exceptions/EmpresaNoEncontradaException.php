@@ -6,7 +6,7 @@ use Exception;
 
 class EmpresaNoEncontradaException extends Exception
 {
-    private const NOT_FOUND_CODE = 404;
+    public const NOT_FOUND_CODE = 404;
 
     public function __construct(string $nit)
     {

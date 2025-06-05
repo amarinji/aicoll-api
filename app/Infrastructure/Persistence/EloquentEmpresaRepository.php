@@ -17,7 +17,7 @@ class EloquentEmpresaRepository implements EmpresaRepositoryInterface
         $model = EmpresaMapper::toModel($empresa);
         $model->save();
 
-        Log::info("Empresa creada: NIT {$empresa->nit}");
+        Log::info("Empresa creada: NIT {$empresa->getNit()}");
 
         return EmpresaMapper::toEntity($model);
     }
@@ -41,25 +41,18 @@ class EloquentEmpresaRepository implements EmpresaRepositoryInterface
 
     public function actualizar(Empresa $empresa): Empresa
     {
-        $model = EmpresaModel::where('nit', $empresa->nit)->first();
-
-        if (!$model) {
-            throw new EmpresaNoEncontradaException($empresa->nit);
+        try {
+            $model = EmpresaModel::where('nit', $empresa->getnit())->firstOrFail();
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            throw new EmpresaNoEncontradaException($empresa->getNit());
         }
 
-        $model->fill([
-            'nombre' => $empresa->nombre,
-            'direccion' => $empresa->direccion,
-            'telefono' => $empresa->telefono,
-            'estado' => $empresa->estado,
-        ]);
-
+        $model = EmpresaMapper::updateModelFromEntity($model, $empresa);
         $model->save();
-
-        Log::info("Empresa actualizada: NIT {$empresa->nit}");
 
         return EmpresaMapper::toEntity($model);
     }
+
 
     public function eliminarInactivas(): int
     {

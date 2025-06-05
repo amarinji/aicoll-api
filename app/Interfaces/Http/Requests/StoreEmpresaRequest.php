@@ -17,16 +17,15 @@ class StoreEmpresaRequest extends FormRequest
             'nit' => 'required|string|unique:empresas,nit',
             'nombre' => 'required|string|max:255',
             'direccion' => 'required|string|max:255',
-            'telefono' => ['required', 'string', 'max:20', 'regex:/^[0-9\s\-\+]+$/'],
+            'telefono' => 'required|string|max:20|regex:/^[\d\s\-\+\(\)]+$/'
         ];
     }
 
     public function messages(): array
     {
-        return [
-            'nit.required' => 'El NIT es obligatorio.',
-            'nit.unique' => 'Este NIT ya está registrado.',
-            'telefono.regex' => 'El teléfono tiene un formato inválido.',
+      return [
+            'nit.unique' => 'Ya existe una empresa registrada con este NIT.',
+            'telefono.regex' => 'El teléfono solo puede contener números, espacios, paréntesis, guiones o signos +.',
         ];
     }
 }

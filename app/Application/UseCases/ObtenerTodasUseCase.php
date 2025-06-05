@@ -2,20 +2,18 @@
 
 namespace App\Application\UseCases;
 
-use App\Application\DTOs\EmpresaDTO;
-use App\Domain\Entities\Empresa;
+use Illuminate\Support\Collection;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
 
 
-class ObtenerPorNitService
+class ObtenerTodasUseCase
 {
     public function __construct(
         private EmpresaRepositoryInterface $repository
     ) {}
-    
-    public function handle(string $nit): Empresa
-    {
-        return $this->repository->obtenerPorNit($nit); 
-    }
 
+    public function execute(): Collection
+    {
+        return $this->repository->obtenerTodas();
+    }
 }

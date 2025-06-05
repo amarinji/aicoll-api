@@ -7,21 +7,15 @@ use App\Domain\Entities\Empresa;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
 
 
-class CrearEmpresaService
+class CrearEmpresaUseCase
 {
     public function __construct(
         private EmpresaRepositoryInterface $repository
     ) {}
 
-    public function handle(EmpresaDTO $dto): Empresa
+    public function execute(EmpresaDTO $dto): Empresa
     {
-        $empresa = new Empresa(
-            nit: $dto->nit,
-            nombre: $dto->nombre,
-            direccion: $dto->direccion,
-            telefono: $dto->telefono,
-        );
-
+        $empresa = new Empresa($dto->getNit(), $dto->getNombre(), $dto->getDireccion(), $dto->getTelefono());
         return $this->repository->crear($empresa);
     }
 }
