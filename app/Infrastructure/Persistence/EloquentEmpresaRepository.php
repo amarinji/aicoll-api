@@ -5,8 +5,8 @@ namespace App\Infrastructure\Persistence;
 use App\Domain\Entities\Empresa;
 use App\Domain\Repositories\EmpresaRepositoryInterface;
 use App\Exceptions\EmpresaNoEncontradaException;
-use App\Infrastructure\Persistence\Eloquent\Models\EmpresaModel;
-use App\Infrastructure\Persistence\Eloquent\Mappers\EmpresaMapper;
+use App\Infrastructure\Persistence\Eloquent\EmpresaModel;
+use App\Infrastructure\Persistence\Mappers\EmpresaMapper;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
@@ -63,6 +63,8 @@ class EloquentEmpresaRepository implements EmpresaRepositoryInterface
 
     public function eliminarInactivas(): int
     {
-        return EmpresaModel::where('estado', 'inactivo')->delete();
+        $count = EmpresaModel::where('estado', 'inactivo')->delete();
+        Log::info("Empresas inactivas eliminadas: {$count}");
+        return $count;
     }
 }

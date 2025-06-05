@@ -22,7 +22,7 @@ class EmpresaTest extends TestCase
         $response->assertStatus(201)
                  ->assertJsonStructure([
                      'message',
-                     'empresa' => ['id', 'nit', 'nombre', 'direccion', 'telefono', 'created_at', 'updated_at']
+                     'empresa' => ['nit', 'nombre', 'direccion', 'telefono']
                  ]);
 
         $this->assertDatabaseHas('empresas', ['nit' => '123456789']);

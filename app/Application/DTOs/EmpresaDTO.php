@@ -40,17 +40,7 @@ final class EmpresaDTO
         $this->direccion = $direccion;
         $this->telefono = $telefono;
     }
-
-    public static function fromArray(array $data): self
-    {
-        return new self(
-            $data['nit'] ?? '',
-            $data['nombre'] ?? '',
-            $data['direccion'] ?? null,
-            $data['telefono'] ?? null,
-        );
-    }
-
+    
     public function getNit(): string
     {
         return $this->nit;

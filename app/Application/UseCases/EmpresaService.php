@@ -32,15 +32,9 @@ class EmpresaService
         return $this->empresaRepository->obtenerTodas();
     }
 
-   public function obtenerPorNit(string $nit): Empresa
+    public function obtenerPorNit(string $nit): Empresa
     {
-        $empresa = Empresa::where('nit', $nit)->first();
-
-        if (!$empresa) {
-            throw new EmpresaNoEncontradaException($nit);
-        }
-
-        return $empresa;
+        return $this->empresaRepository->obtenerPorNit($nit);
     }
 
 

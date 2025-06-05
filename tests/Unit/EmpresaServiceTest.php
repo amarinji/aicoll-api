@@ -25,42 +25,41 @@ class EmpresaServiceTest extends TestCase
 
     public function test_crear_empresa_llama_al_repositorio_con_datos_correctos()
     {
-        $data = [
-                    'nit' => '123456789', 
-                    'nombre' => 'Mi Empresa', 
-                    'direccion' => 'Cra xx', 
-                    'telefono' => '272327666'
-        ];
 
-        // Objeto simulado de Empresa que el repositorio devolvería
-        $empresaMock = new Empresa(
-            $data ['nit'],
-            $data ['nombre'],
-            $data ['direccion'],
-            $data ['telefono']
+        $dto = new EmpresaDTO(
+            nit: '123456789',
+            nombre: 'Mi Empresa',
+            direccion: 'Cra xx',
+            telefono: '27237236',
         );
 
-        // Esperamos que el repositorio reciba los datos y devuelva la Empresa
+        $empresaMock = new Empresa(
+            $dto->nit,
+            $dto->nombre,
+            $dto->direccion,
+            $dto->telefono
+        );
+
         $this->empresaRepository
             ->shouldReceive('crear')
             ->once()
-            ->with(Mockery::on(function ($arg) use ($data) {
-                return $arg->nit === $data['nit']
-                    && $arg->nombre === $data['nombre']
-                    && $arg->direccion === $data['direccion']
-                    && $arg->telefono === $data['telefono'];
+            ->with(Mockery::on(function ($arg) use ($dto) {
+                return $arg->nit === $dto->nit
+                    && $arg->nombre === $dto->nombre
+                    && $arg->direccion === $dto->direccion
+                    && $arg->telefono === $dto->telefono;
             }))
             ->andReturn($empresaMock);
 
         // Ejecutar el método real
-        $resultado = $this->crearEmpresaService->handle($data);
+        $resultado = $this->crearEmpresaService->handle($dto);
 
         // Verificar que se devolvió lo esperado
         $this->assertInstanceOf(Empresa::class, $resultado);
-        $this->assertEquals($data['nit'], $resultado->nit);
-        $this->assertEquals($data['nombre'], $resultado->nombre);
-        $this->assertEquals($data['direccion'], $resultado->direccion);
-        $this->assertEquals($data['telefono'], $resultado->telefono);
+        $this->assertEquals($dto->nit, $resultado->nit);
+        $this->assertEquals($dto->nombre, $resultado->nombre);
+        $this->assertEquals($dto->direccion, $resultado->direccion);
+        $this->assertEquals($dto->telefono, $resultado->telefono);
     }
 
     public function test_crear_empresa_lanza_excepcion_si_repositorio_falla()
@@ -68,19 +67,20 @@ class EmpresaServiceTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Error al crear empresa');
 
-        $data = [
-                            'nit' => '123456789', 
-                            'nombre' => 'Mi Empresa', 
-                            'direccion' => 'Cra xx', 
-                            'telefono' => '272327666'
-                ];
+        
+        $dto = new EmpresaDTO(
+            nit: '123456789',
+            nombre: 'Mi Empresa',
+            direccion: 'Cra xx',
+            telefono: '27237236',
+        );
 
         $this->empresaRepository
             ->shouldReceive('crear')
             ->once()
             ->andThrow(new \Exception('Error al crear empresa'));
 
-        $this->crearEmpresaService->handle($data);
+        $this->crearEmpresaService->handle($dto);
     }
 
     protected function tearDown(): void

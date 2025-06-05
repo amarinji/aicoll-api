@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Infrastructure\Persistence\Mappers;
+
 use App\Domain\Entities\Empresa;
 use App\Infrastructure\Persistence\Eloquent\EmpresaModel;
 

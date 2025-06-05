@@ -1,9 +1,10 @@
 <?php
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\EmpresaController;
+use App\Exceptions\EmpresaNoEncontradaException;
 
-Route::get('/ping', function () {
-    return response()->json(['pong' => true]);
+Route::get('/test', function () {
+    throw new EmpresaNoEncontradaException('123456789');
 });
 
 Route::prefix('empresa')->group(function () {

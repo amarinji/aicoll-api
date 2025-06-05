@@ -13,13 +13,13 @@ class CrearEmpresaService
         private EmpresaRepositoryInterface $repository
     ) {}
 
-    public function handle(array $data): Empresa
+    public function handle(EmpresaDTO $dto): Empresa
     {
         $empresa = new Empresa(
-            nit: $data['nit'],
-            nombre: $data['nombre'],
-            direccion: $data['direccion'] ?? null,
-            telefono: $data['telefono'] ?? null,
+            nit: $dto->nit,
+            nombre: $dto->nombre,
+            direccion: $dto->direccion,
+            telefono: $dto->telefono,
         );
 
         return $this->repository->crear($empresa);
